@@ -1,4 +1,4 @@
-# yt-dlp-container
+# yt-dlp-docker-automation
 
 A Docker-based **yt-dlp automation setup for Windows** with both **headed** and **headless** execution modes.
 
@@ -14,7 +14,7 @@ The goal is to keep everything **dynamic**, **reproducible**, and **portable**.
 
 ## 📁 Folder Structure
 
-
+```
 yt-dlp-container/
 │
 ├── Dockerfile
@@ -35,7 +35,7 @@ yt-dlp-container/
 │   └── docker_error.log
 ├── Archive/
 └── (downloaded media files)
-
+```
 
 ## 🔧 Requirements
 
@@ -83,7 +83,7 @@ Standard yt-dlp options, one per line.
 
 Example:
 
-
+```
 --continue
 --no-overwrites
 --retries infinite
@@ -95,7 +95,7 @@ Example:
 --convert-subs srt
 --concurrent-fragments 1
 --limit-rate 2M
-
+```
 
 ## ▶️ Usage
 
