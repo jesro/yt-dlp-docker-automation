@@ -1,2 +1,10 @@
+# Ignore everything in Downloads
 Downloads/
-config/
+
+# Ignore everything in config
+config/*
+
+# Allow only these specific files
+!config/yt-dlp-options.txt
+!config/cookies-sample.txt
+!config/playlists-sample.txt
