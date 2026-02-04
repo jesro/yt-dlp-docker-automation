@@ -1,26 +1,24 @@
 @echo off
+setlocal
 cd /d "%~dp0"
 
-REM -------------------------------
-REM Ensure config, Downloads, logs exist
-REM -------------------------------
+REM ==================================================
+REM Ensure required directories exist
+REM ==================================================
 if not exist "%~dp0config" mkdir "%~dp0config"
 if not exist "%~dp0Downloads" mkdir "%~dp0Downloads"
 if not exist "%~dp0Downloads\logs" mkdir "%~dp0Downloads\logs"
 
-REM -------------------------------
-REM Delete previous container log
-REM -------------------------------
-if exist "%~dp0Downloads\logs\container.log" del "%~dp0Downloads\logs\container.log"
+REM ==================================================
+REM Clean previous logs
+REM ==================================================
+del "%~dp0Downloads\logs\container.log" 2>nul
+del "%~dp0Downloads\logs\build.log" 2>nul
+del "%~dp0Downloads\logs\docker_error.log" 2>nul
 
-REM -------------------------------
-REM Delete .built file to force rebuild if needed
-REM -------------------------------
-if exist "%~dp0yt-dlp-auto.built" del "%~dp0yt-dlp-auto.built"
-
-REM -------------------------------
+REM ==================================================
 REM Check Docker
-REM -------------------------------
+REM ==================================================
 docker info >nul 2>&1
 if errorlevel 1 (
     if exist "C:\Program Files\Docker\Docker Desktop.exe" (
@@ -33,8 +31,11 @@ if errorlevel 1 (
     )
 )
 
-echo Waiting for Docker to be ready...
+REM ==================================================
+REM Wait for Docker
+REM ==================================================
 set WAIT_COUNT=0
+
 :WAIT_DOCKER
 docker info >nul 2>&1
 if errorlevel 1 (
@@ -46,38 +47,43 @@ if errorlevel 1 (
     timeout /t 2 >nul
     goto WAIT_DOCKER
 )
-echo Docker is running.
 
-REM -------------------------------
-REM Build Docker image if missing
-REM -------------------------------
+REM ==================================================
+REM Build image if missing
+REM ==================================================
 docker image inspect yt-dlp-auto >nul 2>&1
 if errorlevel 1 (
-    echo Docker image yt-dlp-auto not found, building...
-    docker build -t yt-dlp-auto . > "%~dp0Downloads\logs\container.log" 2>&1
+    docker build -t yt-dlp-auto . ^
+        >> "%~dp0Downloads\logs\build.log" 2>&1
+
     if errorlevel 1 (
-        echo Docker build FAILED! Check container.log for details.
-        if exist "%~dp0yt-dlp-auto.built" del "%~dp0yt-dlp-auto.built"
+        echo Docker build FAILED. >> "%~dp0Downloads\logs\build.log"
         exit /b 1
     )
-    type nul > "%~dp0yt-dlp-auto.built"
 )
 
-REM -------------------------------
-REM Run container and save log
-REM -------------------------------
+REM ==================================================
+REM Run container
+REM ==================================================
 docker run --rm ^
   -v "%~dp0Downloads:/downloads" ^
   -v "%~dp0config:/config" ^
-  yt-dlp-auto > "%~dp0Downloads\logs\container.log" 2>&1
+  yt-dlp-auto ^
+  > "%~dp0Downloads\logs\container.log" 2>&1
 
-REM -------------------------------
-REM Cleanup empty Downloads folder
-REM -------------------------------
-set HASFILES=
-for /f %%I in ('dir /b "%~dp0Downloads"') do set HASFILES=1
-if not defined HASFILES (
+set RUN_RC=%ERRORLEVEL%
+if not "%RUN_RC%"=="0" (
+    echo Container exited with errors. >> "%~dp0Downloads\logs\container.log"
+    exit /b %RUN_RC%
+)
+
+REM ==================================================
+REM Cleanup Downloads (ignore logs)
+REM ==================================================
+set HASCONTENT=
+for /f %%I in ('dir /b "%~dp0Downloads" ^| findstr /v /i logs') do set HASCONTENT=1
+if not defined HASCONTENT (
     rd /s /q "%~dp0Downloads"
 )
 
-REM Headless: No pause
+exit /b 0
