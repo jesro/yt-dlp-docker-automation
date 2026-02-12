@@ -217,6 +217,50 @@ Use `.gitignore` to protect sensitive files.
 
 ---
 
+## 🤖 Contribute with AI
+
+This project welcomes **AI-assisted contributions**.
+
+You are encouraged to use tools like:
+
+- ChatGPT
+- GitHub Copilot
+- Claude
+- Local LLMs
+- Any other AI development assistant
+
+AI can be helpful for:
+
+- Improving batch scripts
+- Enhancing Docker reliability
+- Optimizing yt-dlp flags
+- Improving logging and retry logic
+- Refactoring Python automation
+- Improving documentation
+- Suggesting cross-platform improvements
+
+### AI Contribution Guidelines
+
+If AI was used in your contribution:
+
+- ✅ Review and understand all generated code  
+- ✅ Test scripts in both headed and headless modes  
+- ✅ Ensure Windows + Docker compatibility  
+- ✅ Avoid unsafe or destructive commands  
+- ✅ Clearly explain changes in your PR  
+- ✅ Mention AI usage in your PR description (optional but appreciated)
+
+AI is a tool — contributors remain fully responsible for their submissions.
+
+This project values:
+
+- Reproducibility  
+- Transparency  
+- Stability  
+- Clean automation design  
+
+---
+
 ## 📄 License
 
 MIT License (or change as needed)
