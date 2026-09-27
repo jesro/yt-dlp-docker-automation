@@ -53,6 +53,9 @@ echo Docker is running.
 echo.
 
 REM ==================================================
+REM The Dockerfile is the recipe/instructions for creating an image.
+REM Your BAT file is what tells Docker to actually build that recipe into an image.
+REM 
 REM Build image if missing
 REM ==================================================
 docker image inspect yt-dlp-auto >nul 2>&1
@@ -71,6 +74,10 @@ if errorlevel 1 (
 )
 
 REM ==================================================
+REM Docker uses the Dockerfile to build an image, then creates a temporary container from that image when docker run is executed.
+REM Why your Downloads survive - So downloaded files go directly to your Windows Downloads folder rather than living only inside the temporary container.
+REM because you use --rm the container disappears when the download process finishes, while the image remains.
+REM
 REM Run container
 REM ==================================================
 echo Running yt-dlp container...

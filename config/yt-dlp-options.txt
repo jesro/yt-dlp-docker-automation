@@ -13,5 +13,5 @@
 --write-auto-subs
 --sub-langs en.*
 --convert-subs srt
---extractor-args youtube:android
+--js-runtimes deno
 -f bv*[height<=1080][ext=mp4]+ba[ext=m4a]/b[ext=mp4]
